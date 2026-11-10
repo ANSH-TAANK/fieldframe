@@ -1,4 +1,18 @@
+
+<p align="center">
+  <strong>Choose your language / अपनी भाषा चुनें</strong>
+</p>
+
+<p align="center">
+  <a href="README.md">English</a>
+  &nbsp; | &nbsp;
+  <a href="README.hi.md">हिन्दी</a>
+</p>
+
+---
+
 # Fieldframe
+
 
 **Wireless mobile photography for Google Sheets.**
 
