@@ -198,7 +198,9 @@ Fieldframe allows you to capture photographs on your smartphone and insert them 
 
 The following demonstration shows the complete workflow, including live cell detection, photograph selection, and uploading to Google Sheets.
 
-**[Watch the Fieldframe Demonstration](docs/videos/fieldframe-demo.mp4)**
+[![Watch the Fieldframe Demonstration](docs/images/10-fieldframe-demo.gif)](docs/videos/fieldframe-demo.mp4)
+
+**[Watch the full demonstration video](docs/videos/fieldframe-demo.mp4)**
 
 #### Uploading a Photograph
 
