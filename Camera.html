@@ -1,0 +1,2219 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f7f7">
+  <title>Fieldframe — Capture</title>
+
+  <style>
+    :root {
+      --ink: #18211e;
+      --muted: #69736f;
+      --line: #e1e6e2;
+      --paper: #f6f7f7;
+      --white: #ffffff;
+      --green: #246a4d;
+      --green-bg: #eaf3ed;
+      --red: #a63b37;
+      --red-bg: #fdf0ee;
+      --amber: #93651e;
+      --amber-bg: #fff5e5;
+      --shadow: 0 14px 45px rgba(23,40,31,.045);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: none;
+    }
+
+    .shell {
+      max-width: 1050px;
+      margin: auto;
+      padding: 0 28px;
+    }
+
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.82);
+    }
+
+    .topbar .shell {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 16px;
+      font-weight: 750;
+      letter-spacing: -.55px;
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 35px;
+      height: 35px;
+      border-radius: 10px;
+      background: #1c3329;
+      color: white;
+    }
+
+    .mark svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .brand-sub {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0;
+    }
+
+    .top-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #38946a;
+      flex: none;
+    }
+
+    .top-right strong {
+      color: #4b5d54;
+      font-weight: 600;
+    }
+
+    main.shell {
+      padding-top: 47px;
+      padding-bottom: 70px;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 1.5px;
+      color: #63716a;
+      text-transform: uppercase;
+      margin: 0 0 12px;
+    }
+
+    .heading {
+      font-size: clamp(30px,4vw,43px);
+      line-height: 1.13;
+      letter-spacing: -1.65px;
+      font-weight: 730;
+      margin: 0 0 11px;
+    }
+
+    .intro {
+      color: var(--muted);
+      font-size: 15px;
+      margin: 0 0 32px;
+      max-width: 600px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0,1.2fr) minmax(290px,.8fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 21px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h2 {
+      font-size: 15px;
+      letter-spacing: -.25px;
+      margin: 0;
+      font-weight: 720;
+    }
+
+    .panel-head span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .preview-area {
+      margin: 20px 24px 0;
+      min-height: 355px;
+      background: #f5f7f5;
+      border: 1px dashed #cfd9d2;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 30px 20px;
+      max-width: 310px;
+    }
+
+    .empty-icon {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 17px;
+      display: grid;
+      place-items: center;
+      border-radius: 17px;
+      background: #e9efea;
+      color: #426a54;
+    }
+
+    .empty-icon svg {
+      width: 26px;
+      height: 26px;
+    }
+
+    .empty-state h3 {
+      font-size: 17px;
+      margin: 0 0 6px;
+      letter-spacing: -.4px;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.65;
+    }
+
+    .preview-area img {
+      display: none;
+      max-width: 100%;
+      max-height: 470px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .preview-area.has-image {
+      border-style: solid;
+      background: #edf0ee;
+    }
+
+    .preview-area.has-image img {
+      display: block;
+    }
+
+    .preview-area.has-image .empty-state {
+      display: none;
+    }
+
+    .file-info {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 14px 24px 0;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+
+    .file-info.visible {
+      display: flex;
+    }
+
+    .file-name {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .file-size {
+      white-space: nowrap;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .actions {
+      padding: 20px 24px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .file-action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 49px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: white;
+      font-size: 13px;
+      font-weight: 680;
+      color: var(--ink);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .file-action.primary {
+      background: #1e3429;
+      color: white;
+      border-color: #1e3429;
+    }
+
+    .file-action input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .file-action.disabled {
+      opacity: .5;
+      pointer-events: none;
+    }
+
+    .file-action svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .side {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .destination-card,
+    .mode-card,
+    .upload-card {
+      padding: 24px;
+    }
+
+    .mini-label {
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 15px;
+    }
+
+    .destination-row {
+      display: flex;
+      gap: 13px;
+      align-items: center;
+    }
+
+    .sheet-icon {
+      display: grid;
+      place-items: center;
+      width: 45px;
+      height: 45px;
+      border: 1px solid #dce8df;
+      border-radius: 11px;
+      background: #eff6f0;
+      color: #28784e;
+    }
+
+    .sheet-icon svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .cell-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 0 3px;
+    }
+
+    .cell-value {
+      font-size: 25px;
+      font-weight: 750;
+      letter-spacing: -.8px;
+      line-height: 1.1;
+    }
+
+    .state {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 19px;
+      font-size: 12px;
+      font-weight: 650;
+      color: var(--green);
+      background: var(--green-bg);
+      padding: 7px 10px;
+      border-radius: 7px;
+    }
+
+    .state .live-dot {
+      width: 6px;
+      height: 6px;
+    }
+
+    .state.warning {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .state.error {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .state.warning .live-dot {
+      background: #c78c34;
+    }
+
+    .state.error .live-dot {
+      background: var(--red);
+    }
+
+    .destination-hint {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 15px 0 0;
+    }
+
+    .mode-card h2,
+    .upload-card h2 {
+      font-size: 16px;
+      margin: 0 0 7px;
+      letter-spacing: -.35px;
+    }
+
+    .mode-description,
+    .upload-card > p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 17px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      padding: 4px;
+      border-radius: 10px;
+      background: #f0f3f0;
+    }
+
+    .segment {
+      border: 0;
+      background: transparent;
+      color: #67746c;
+      min-height: 43px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .segment.active {
+      background: white;
+      color: #1d4934;
+      box-shadow: 0 1px 5px rgba(0,0,0,.08);
+    }
+
+    .direction-section {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .direction-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .direction-option {
+      min-height: 70px;
+      padding: 12px 8px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .direction-option.active {
+      border-color: #398261;
+      background: #f0f8f2;
+      color: #236847;
+    }
+
+    .direction-option svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .mode-hint {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 13px 0 0;
+    }
+
+    .secondary-btn {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      border-radius: 9px;
+      padding: 11px 13px;
+      min-height: 43px;
+      font-size: 12px;
+      font-weight: 680;
+      width: 100%;
+      margin-top: 13px;
+    }
+
+    .secondary-btn:disabled {
+      opacity: .5;
+    }
+
+    .upload-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 52px;
+      background: #236847;
+      border: 0;
+      color: white;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 730;
+    }
+
+    .upload-btn:disabled {
+      background: #c9d4ce;
+      color: #f9faf9;
+    }
+
+    .upload-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .status {
+      margin-top: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      border-radius: 9px;
+      padding: 12px 13px;
+      background: #f4f6f4;
+      color: #65716a;
+      font-size: 12px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .status svg {
+      width: 17px;
+      height: 17px;
+      margin-top: 1px;
+    }
+
+    .status.success {
+      background: var(--green-bg);
+      color: #236747;
+    }
+
+    .status.error {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .status.busy {
+      background: #edf3fa;
+      color: #335d88;
+    }
+
+    .status.warning {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .details {
+      border-top: 1px solid var(--line);
+      margin-top: 21px;
+      padding-top: 18px;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .details svg {
+      width: 16px;
+      height: 16px;
+      margin-top: 1px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 27px;
+      color: #87928c;
+      font-size: 11px;
+    }
+
+    .footer strong {
+      color: #697a70;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(16,29,22,.56);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal-card {
+      background: white;
+      width: 100%;
+      max-width: 420px;
+      border-radius: 17px;
+      padding: 25px;
+      box-shadow: 0 25px 80px rgba(0,0,0,.2);
+    }
+
+    .warning-icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--amber-bg);
+      color: var(--amber);
+      margin-bottom: 17px;
+    }
+
+    .modal-card h2 {
+      font-size: 21px;
+      letter-spacing: -.5px;
+      margin: 0 0 9px;
+    }
+
+    .modal-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.65;
+      margin: 0 0 17px;
+    }
+
+    .occupied-cell {
+      background: #f6f8f6;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 13px 15px;
+      margin-bottom: 19px;
+    }
+
+    .occupied-cell span {
+      font-size: 11px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .occupied-cell strong {
+      font-size: 24px;
+    }
+
+    .modal-actions {
+      display: grid;
+      gap: 9px;
+    }
+
+    .modal-actions button {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 9px;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 12px;
+    }
+
+    .modal-primary {
+      border: 0;
+      color: white;
+      background: #236847;
+    }
+
+    .modal-secondary {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--ink);
+    }
+
+    @media (max-width: 760px) {
+      .shell {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .topbar .shell {
+        height: 65px;
+      }
+
+      .brand {
+        font-size: 15px;
+      }
+
+      .brand-sub,
+      .top-right {
+        font-size: 11px;
+      }
+
+      main.shell {
+        padding-top: 30px;
+        padding-bottom: 70px;
+      }
+
+      .heading {
+        font-size: 33px;
+      }
+
+      .intro {
+        font-size: 13px;
+        margin-bottom: 23px;
+      }
+
+      .workspace {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .side {
+        display: contents;
+      }
+
+      .mode-card {
+        order: 0;
+        width: 100%;
+      }
+
+      .destination-card {
+        order: 1;
+        width: 100%;
+      }
+
+      .capture-panel {
+        order: 2;
+        width: 100%;
+      }
+
+      .upload-card {
+        order: 3;
+        width: 100%;
+      }
+
+      .destination-card,
+      .mode-card,
+      .upload-card {
+        padding: 19px;
+      }
+
+      .panel-head {
+        padding: 18px 19px;
+      }
+
+      .preview-area {
+        margin: 16px 19px 0;
+        min-height: 270px;
+      }
+
+      .actions {
+        padding: 15px 19px 19px;
+      }
+
+      .file-info {
+        margin-left: 19px;
+        margin-right: 19px;
+      }
+    }
+
+    @media (max-width: 390px) {
+      .shell {
+        padding-left: 13px;
+        padding-right: 13px;
+      }
+
+      .top-right strong {
+        display: none;
+      }
+
+      .heading {
+        font-size: 29px;
+      }
+
+      .actions {
+        gap: 8px;
+      }
+
+      .file-action {
+        font-size: 12px;
+        padding: 10px 6px;
+      }
+
+      .preview-area {
+        min-height: 240px;
+      }
+
+      .modal-card {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="shell">
+
+      <div class="brand">
+        <div class="mark">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 8h4l2-3h6l2 3h4v11H3z"/>
+            <circle cx="12" cy="13.5" r="3.5"/>
+          </svg>
+        </div>
+
+        <div>
+          Fieldframe
+          <span class="brand-sub">/ Capture</span>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <span class="live-dot"></span>
+        <strong>Google Sheets</strong>
+        <span>· Web capture</span>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="shell">
+
+    <p class="eyebrow">FIELD PHOTO WORKSPACE</p>
+
+    <h1 class="heading">Capture. Attach. Done.</h1>
+
+    <p class="intro">
+      Take a site photo or choose an original from your device.
+      Attach it directly to Google Sheets — manually or automatically.
+    </p>
+
+    <div class="workspace">
+
+      <!-- PHOTO PANEL -->
+
+      <section class="panel capture-panel">
+
+        <div class="panel-head">
+          <h2>Photo</h2>
+          <span id="photoStage">No photo selected</span>
+        </div>
+
+        <div id="previewArea" class="preview-area">
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M3 8h4l2-3h6l2 3h4v11H3z"/>
+                <circle cx="12" cy="13.5" r="3.5"/>
+              </svg>
+            </div>
+
+            <h3>Your photo goes here</h3>
+
+            <p>
+              Use your camera to capture a new image,
+              or select the original file from your gallery.
+            </p>
+
+          </div>
+
+          <img id="preview" alt="Selected photo">
+
+        </div>
+
+        <div id="fileInfo" class="file-info">
+          <span id="fileName" class="file-name"></span>
+          <span id="fileSize" class="file-size"></span>
+        </div>
+
+        <div class="actions">
+
+          <label id="cameraAction" class="file-action primary">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 8h4l2-3h6l2 3h4v11H3z"/>
+              <circle cx="12" cy="13.5" r="3.5"/>
+            </svg>
+            Take photo
+
+            <input
+              type="file"
+              id="cameraInput"
+              accept="image/jpeg,image/png,image/webp"
+              capture="environment"
+              aria-label="Take photo">
+          </label>
+
+          <label id="galleryAction" class="file-action">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="m21 16-5-5L5 21"/>
+            </svg>
+            Browse gallery
+
+            <input
+              type="file"
+              id="galleryInput"
+              accept="image/jpeg,image/png,image/webp"
+              aria-label="Choose photo">
+          </label>
+
+        </div>
+
+      </section>
+
+      <aside class="side">
+
+        <!-- UPLOAD MODE -->
+
+        <section class="panel mode-card">
+
+          <p class="mini-label">UPLOAD PREFERENCES</p>
+          <h2>Upload mode</h2>
+
+          <p class="mode-description">
+            Choose how the next destination is selected.
+          </p>
+
+          <div class="segmented"
+               role="group"
+               aria-label="Upload mode">
+
+            <button
+              id="manualMode"
+              class="segment active"
+              type="button"
+              aria-pressed="true">
+              Manual
+            </button>
+
+            <button
+              id="autoMode"
+              class="segment"
+              type="button"
+              aria-pressed="false">
+              Automatic
+            </button>
+
+          </div>
+
+          <div id="directionSection"
+               class="direction-section"
+               hidden>
+
+            <p class="mini-label">MOVE AFTER UPLOAD</p>
+
+            <div class="direction-options">
+
+              <button
+                id="downDirection"
+                class="direction-option active"
+                type="button"
+                aria-pressed="true">
+
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 4v16m-6-6 6 6 6-6"/>
+                </svg>
+
+                Down · Rows
+              </button>
+
+              <button
+                id="rightDirection"
+                class="direction-option"
+                type="button"
+                aria-pressed="false">
+
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 12h16m-6-6 6 6-6 6"/>
+                </svg>
+
+                Right · Columns
+              </button>
+
+            </div>
+
+            <p class="mode-hint">
+              Select a starting cell on your laptop.
+              The destination advances after each successful upload.
+              A new laptop selection changes the starting point.
+            </p>
+
+            <button
+              id="restartAuto"
+              class="secondary-btn"
+              type="button">
+              Use selected laptop cell as starting point
+            </button>
+
+          </div>
+
+        </section>
+
+        <!-- DESTINATION -->
+
+        <section class="panel destination-card">
+
+          <p class="mini-label">LIVE DESTINATION</p>
+
+          <div class="destination-row">
+
+            <div class="sheet-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M5 3h10l4 4v14H5z"/>
+                <path d="M15 3v5h4M8 12h8M8 16h8M12 10v9"/>
+              </svg>
+            </div>
+
+            <div>
+              <p class="cell-label">Destination cell</p>
+              <div id="cellValue" class="cell-value">—</div>
+            </div>
+
+          </div>
+
+          <div id="selectionState" class="state warning">
+            <span class="live-dot"></span>
+            <span id="selectionText">Checking selection</span>
+          </div>
+
+          <p id="destinationHint" class="destination-hint">
+            Select an empty cell in your spreadsheet on the laptop.
+          </p>
+
+        </section>
+
+        <!-- UPLOAD -->
+
+        <section class="panel upload-card">
+
+          <p class="mini-label">FINAL STEP</p>
+
+          <h2>Send to spreadsheet</h2>
+
+          <p>
+            The original is saved to your private Drive folder.
+            A link-accessible display copy is used inside the sheet.
+          </p>
+
+          <button
+            id="upload"
+            class="upload-btn"
+            type="button"
+            disabled>
+
+            <svg viewBox="0 0 24 24">
+              <path d="M12 16V4m-4 4 4-4 4 4M4 16v4h16v-4"/>
+            </svg>
+
+            <span id="uploadLabel">
+              Upload to selected cell
+            </span>
+
+          </button>
+
+          <div id="status"
+               class="status"
+               role="status"
+               aria-live="polite">
+
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 11v5m0-8h.01"/>
+            </svg>
+
+            <span id="statusText">
+              Choose a photo to get started.
+            </span>
+
+          </div>
+
+          <div class="details">
+
+            <svg viewBox="0 0 24 24">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+
+            <span>
+              Original files are not resized or recompressed in the browser.
+              JPEG, PNG and WebP, up to 20 MB.
+              Display copies are accessible through their links.
+            </span>
+
+          </div>
+
+        </section>
+
+      </aside>
+
+    </div>
+
+    <div class="footer">
+      <span>
+        <strong>Fieldframe</strong>
+        · Wireless camera for Google Sheets
+      </span>
+      <span>Google Drive + Apps Script</span>
+    </div>
+
+  </main>
+
+  <!-- OCCUPIED CELL MODAL -->
+
+  <div
+    id="occupiedModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="occupiedTitle"
+    hidden>
+
+    <div class="modal-card">
+
+      <div class="warning-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="m12 3 10 18H2z"/>
+          <path d="M12 9v5m0 3h.01"/>
+        </svg>
+      </div>
+
+      <h2 id="occupiedTitle">Cell already occupied</h2>
+
+      <p>
+        This destination already contains data or an image.
+        What would you like to do?
+      </p>
+
+      <div class="occupied-cell">
+        <span>Occupied destination</span>
+        <strong id="occupiedCellValue">—</strong>
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          id="skipOccupied"
+          class="modal-primary"
+          type="button">
+          Skip to next empty cell
+        </button>
+
+        <button
+          id="chooseAnother"
+          class="modal-secondary"
+          type="button">
+          I'll select another cell
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    // ========================================
+    // ELEMENT REFERENCES
+    // ========================================
+
+    const $ = id => document.getElementById(id);
+
+    const cameraInput = $("cameraInput");
+    const galleryInput = $("galleryInput");
+    const preview = $("preview");
+    const previewArea = $("previewArea");
+    const fileInfo = $("fileInfo");
+    const fileName = $("fileName");
+    const fileSize = $("fileSize");
+    const photoStage = $("photoStage");
+
+    const cellValue = $("cellValue");
+    const selectionState = $("selectionState");
+    const selectionText = $("selectionText");
+    const destinationHint = $("destinationHint");
+
+    const manualButton = $("manualMode");
+    const autoButton = $("autoMode");
+    const directionSection = $("directionSection");
+    const downButton = $("downDirection");
+    const rightButton = $("rightDirection");
+    const restartButton = $("restartAuto");
+
+    const uploadButton = $("upload");
+    const uploadLabel = $("uploadLabel");
+    const statusBox = $("status");
+    const statusText = $("statusText");
+
+    const cameraAction = $("cameraAction");
+    const galleryAction = $("galleryAction");
+
+    const modal = $("occupiedModal");
+    const occupiedCellValue = $("occupiedCellValue");
+    const skipButton = $("skipOccupied");
+    const anotherButton = $("chooseAnother");
+
+    const MAX_BYTES = 20 * 1024 * 1024;
+
+    // ========================================
+    // STATE
+    // ========================================
+
+    let mode = "manual";
+    let direction = "down";
+
+    let photo = null;
+    let photoUrl = null;
+
+    let laptop = null;
+    let destination = null;
+
+    let anchorAt = 0;
+    let lastHandledAt = 0;
+    let manualUsedAt = 0;
+
+    let waiting = false;
+    let waitAfter = 0;
+
+    let busy = false;
+    let checking = false;
+    let polling = false;
+    let modalOpen = false;
+
+    let epoch = 0;
+
+    // ========================================
+    // UI HELPERS
+    // ========================================
+
+    function setStatus(message, type = "") {
+      statusText.textContent = message;
+      statusBox.className =
+        "status" + (type ? " " + type : "");
+    }
+
+    function setSelectionState(type, text, hint) {
+      selectionState.className =
+        "state" + (type ? " " + type : "");
+
+      selectionText.textContent = text;
+      destinationHint.textContent = hint;
+    }
+
+    function refresh() {
+      cellValue.textContent =
+        destination ? destination.cell : "—";
+
+      uploadButton.disabled =
+        busy ||
+        checking ||
+        modalOpen ||
+        waiting ||
+        !photo ||
+        !destination;
+
+      uploadLabel.textContent = busy
+        ? "Uploading photo..."
+        : "Upload to " +
+          (destination
+            ? destination.cell
+            : "selected cell");
+
+      cameraInput.disabled = busy;
+      galleryInput.disabled = busy;
+
+      cameraAction.classList.toggle("disabled", busy);
+      galleryAction.classList.toggle("disabled", busy);
+
+      manualButton.disabled = busy;
+      autoButton.disabled = busy;
+      downButton.disabled = busy;
+      rightButton.disabled = busy;
+      restartButton.disabled = busy || checking;
+    }
+
+    function setDestination(cell, sheetId) {
+      destination = {
+        cell: cell,
+        sheetId: String(sheetId)
+      };
+      refresh();
+    }
+
+    function clearDestination() {
+      destination = null;
+      refresh();
+    }
+
+    function clearPhoto() {
+      photo = null;
+
+      if (photoUrl) {
+        URL.revokeObjectURL(photoUrl);
+        photoUrl = null;
+      }
+
+      preview.removeAttribute("src");
+      previewArea.classList.remove("has-image");
+      fileInfo.classList.remove("visible");
+
+      fileName.textContent = "";
+      fileSize.textContent = "";
+      photoStage.textContent = "No photo selected";
+
+      refresh();
+    }
+
+    // ========================================
+    // MODE CONTROLS
+    // ========================================
+
+    function updateModeUI() {
+      const manual = mode === "manual";
+
+      manualButton.classList.toggle("active", manual);
+      autoButton.classList.toggle("active", !manual);
+
+      manualButton.setAttribute(
+        "aria-pressed",
+        String(manual)
+      );
+
+      autoButton.setAttribute(
+        "aria-pressed",
+        String(!manual)
+      );
+
+      directionSection.hidden = manual;
+
+      downButton.classList.toggle(
+        "active",
+        direction === "down"
+      );
+
+      rightButton.classList.toggle(
+        "active",
+        direction === "right"
+      );
+
+      downButton.setAttribute(
+        "aria-pressed",
+        String(direction === "down")
+      );
+
+      rightButton.setAttribute(
+        "aria-pressed",
+        String(direction === "right")
+      );
+    }
+
+    function closeModal() {
+      modalOpen = false;
+      modal.hidden = true;
+      refresh();
+    }
+
+    function changeMode(nextMode) {
+      if (busy || checking) return;
+
+      epoch++;
+
+      mode = nextMode;
+      waiting = false;
+      lastHandledAt = 0;
+
+      closeModal();
+      clearDestination();
+      updateModeUI();
+
+      setSelectionState(
+        "warning",
+        "Checking laptop selection",
+        "Select a cell in Google Sheets."
+      );
+
+      setStatus(
+        nextMode === "auto"
+          ? "Automatic mode enabled."
+          : "Manual mode enabled."
+      );
+
+      pollSelection();
+    }
+
+    manualButton.addEventListener("click", function() {
+      changeMode("manual");
+    });
+
+    autoButton.addEventListener("click", function() {
+      changeMode("auto");
+    });
+
+    downButton.addEventListener("click", function() {
+      if (busy || checking) return;
+      direction = "down";
+      updateModeUI();
+      setStatus("Automatic direction: Down.");
+    });
+
+    rightButton.addEventListener("click", function() {
+      if (busy || checking) return;
+      direction = "right";
+      updateModeUI();
+      setStatus("Automatic direction: Right.");
+    });
+
+    // ========================================
+    // OCCUPIED CELL HANDLING
+    // ========================================
+
+    function openOccupied(cell) {
+      modalOpen = true;
+      occupiedCellValue.textContent = cell;
+
+      // In Manual mode, backend only permits
+      // the cell selected on the laptop.
+      skipButton.hidden = mode !== "auto";
+
+      modal.hidden = false;
+
+      setSelectionState(
+        "warning",
+        "Cell occupied",
+        cell + " already contains data or an image."
+      );
+
+      setStatus(
+        "Cell " + cell + " is occupied.",
+        "warning"
+      );
+
+      refresh();
+    }
+
+    function waitForNewSelection() {
+      epoch++;
+      closeModal();
+
+      waiting = true;
+      waitAfter = laptop
+        ? laptop.selectedAt
+        : Date.now();
+
+      clearDestination();
+
+      setSelectionState(
+        "warning",
+        "Waiting for another cell",
+        "Click a different cell on your laptop."
+      );
+
+      setStatus(
+        "Select another cell in Google Sheets.",
+        "warning"
+      );
+    }
+
+    anotherButton.addEventListener(
+      "click",
+      waitForNewSelection
+    );
+
+    skipButton.addEventListener("click", function() {
+      if (
+        busy ||
+        checking ||
+        !destination ||
+        mode !== "auto"
+      ) {
+        return;
+      }
+
+      const current = {
+        cell: destination.cell,
+        sheetId: destination.sheetId
+      };
+
+      closeModal();
+      checking = true;
+
+      const version = ++epoch;
+
+      setStatus(
+        "Finding next empty cell...",
+        "busy"
+      );
+
+      refresh();
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          checking = false;
+
+          if (version !== epoch) return;
+
+          if (result && result.success) {
+            setDestination(
+              result.cell,
+              result.sheetId
+            );
+
+            setSelectionState(
+              "",
+              "Empty cell found",
+              "Next destination: " + result.cell
+            );
+
+            setStatus(
+              "Skipped to " + result.cell,
+              "success"
+            );
+          } else {
+            clearDestination();
+
+            setSelectionState(
+              "warning",
+              "No empty cell found",
+              result && result.message
+                ? result.message
+                : "Select another cell."
+            );
+          }
+
+          refresh();
+          pollSelection();
+        })
+        .withFailureHandler(function(error) {
+          checking = false;
+          clearDestination();
+
+          setStatus(
+            "Skip failed: " + error.message,
+            "error"
+          );
+
+          refresh();
+        })
+        .findNextEmptyCell(
+          current.cell,
+          current.sheetId,
+          direction
+        );
+    });
+
+    // ========================================
+    // INSPECT DESTINATION
+    // ========================================
+
+    function inspectDestination() {
+      if (!destination || checking || busy) return;
+
+      checking = true;
+      const version = ++epoch;
+
+      const current = {
+        cell: destination.cell,
+        sheetId: destination.sheetId
+      };
+
+      refresh();
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          checking = false;
+
+          if (version !== epoch) return;
+
+          if (result && result.occupied) {
+            openOccupied(current.cell);
+          } else if (result && result.success) {
+            setSelectionState(
+              "",
+              "Destination available",
+              "Ready to upload into " + current.cell
+            );
+          } else {
+            clearDestination();
+
+            setSelectionState(
+              "error",
+              "Destination unavailable",
+              result && result.message
+                ? result.message
+                : "Select another cell."
+            );
+          }
+
+          refresh();
+          pollSelection();
+        })
+        .withFailureHandler(function(error) {
+          checking = false;
+
+          if (version !== epoch) return;
+
+          clearDestination();
+
+          setSelectionState(
+            "error",
+            "Destination check failed",
+            error.message
+          );
+
+          refresh();
+        })
+        .inspectDestination(
+          current.cell,
+          current.sheetId
+        );
+    }
+
+    // ========================================
+    // APPLY LAPTOP SELECTION
+    // ========================================
+
+    function applySelection(info) {
+      if (!info || info.expired) return;
+
+      epoch++;
+
+      anchorAt = Number(info.selectedAt);
+      lastHandledAt = anchorAt;
+
+      waiting = false;
+      closeModal();
+
+      setDestination(
+        info.cell,
+        info.sheetId
+      );
+
+      setSelectionState(
+        "",
+        "Checking destination",
+        "Selected " + info.cell
+      );
+
+      inspectDestination();
+    }
+
+    // ========================================
+    // POLL LAPTOP SELECTION
+    // ========================================
+
+    function pollSelection() {
+      if (polling) return;
+
+      polling = true;
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          polling = false;
+
+          laptop = result && result.success
+            ? {
+                cell: result.cell,
+                sheetId: String(result.sheetId),
+                selectedAt: Number(result.selectedAt),
+                expired: !!result.expired
+              }
+            : null;
+
+          if (busy || checking) return;
+
+          // A newer laptop selection should
+          // override an occupied-cell dialog.
+          if (
+            modalOpen &&
+            laptop &&
+            !laptop.expired &&
+            laptop.selectedAt > lastHandledAt
+          ) {
+            applySelection(laptop);
+            return;
+          }
+
+          if (modalOpen) return;
+
+          if (waiting) {
+            if (
+              laptop &&
+              !laptop.expired &&
+              laptop.selectedAt > waitAfter
+            ) {
+              applySelection(laptop);
+            }
+            return;
+          }
+
+          if (mode === "manual") {
+            if (!laptop || laptop.expired) {
+              clearDestination();
+
+              setSelectionState(
+                "warning",
+                "Select a fresh cell",
+                "Click a cell on your laptop."
+              );
+
+              return;
+            }
+
+            if (
+              laptop.selectedAt === manualUsedAt
+            ) {
+              clearDestination();
+
+              setSelectionState(
+                "warning",
+                "Select next cell",
+                "Click another cell on your laptop."
+              );
+
+              return;
+            }
+
+            if (
+              !destination ||
+              laptop.selectedAt !== lastHandledAt ||
+              destination.cell !== laptop.cell ||
+              destination.sheetId !== laptop.sheetId
+            ) {
+              applySelection(laptop);
+            }
+
+            return;
+          }
+
+          // Automatic mode:
+          // only NEW laptop selections override
+          // the automatically advanced cell.
+
+          if (
+            laptop &&
+            !laptop.expired &&
+            (
+              lastHandledAt === 0 ||
+              laptop.selectedAt > lastHandledAt
+            )
+          ) {
+            applySelection(laptop);
+          } else if (
+            !destination &&
+            lastHandledAt === 0
+          ) {
+            setSelectionState(
+              "warning",
+              "Select starting cell",
+              "Click a cell on your laptop."
+            );
+          }
+        })
+        .withFailureHandler(function(error) {
+          polling = false;
+
+          if (!destination && !busy) {
+            setSelectionState(
+              "error",
+              "Connection issue",
+              error.message
+            );
+          }
+        })
+        .getSelectedCell();
+    }
+
+    // ========================================
+    // AUTOMATIC ADVANCE
+    // ========================================
+
+    function advanceCell(cell, sheetId) {
+      checking = true;
+
+      const version = ++epoch;
+
+      setSelectionState(
+        "warning",
+        "Finding next cell",
+        "Checking the next destination."
+      );
+
+      refresh();
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          checking = false;
+
+          if (version !== epoch) return;
+
+          if (result && result.success) {
+            setDestination(
+              result.cell,
+              result.sheetId
+            );
+
+            if (result.occupied) {
+              openOccupied(result.cell);
+            } else {
+              setSelectionState(
+                "",
+                "Automatic mode ready",
+                "Next photo: " + result.cell
+              );
+            }
+          } else {
+            clearDestination();
+
+            setSelectionState(
+              "warning",
+              "End of worksheet",
+              result && result.message
+                ? result.message
+                : "Select another starting cell."
+            );
+          }
+
+          refresh();
+          pollSelection();
+        })
+        .withFailureHandler(function(error) {
+          checking = false;
+          clearDestination();
+
+          setStatus(
+            "Unable to advance: " + error.message,
+            "error"
+          );
+
+          refresh();
+        })
+        .getNextCell(
+          cell,
+          sheetId,
+          direction
+        );
+    }
+
+    // ========================================
+    // RESTART AUTOMATIC MODE
+    // ========================================
+
+    restartButton.addEventListener("click", function() {
+      if (busy || checking) return;
+
+      epoch++;
+      waiting = false;
+
+      closeModal();
+      clearDestination();
+
+      lastHandledAt = 0;
+
+      if (laptop && !laptop.expired) {
+        applySelection(laptop);
+      } else {
+        pollSelection();
+      }
+    });
+
+    // ========================================
+    // PHOTO SELECTION
+    // ========================================
+
+    function choosePhoto(file) {
+      if (!file || busy) return;
+
+      const allowed = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+      ];
+
+      if (!allowed.includes(file.type)) {
+        setStatus(
+          "Only JPEG, PNG and WebP photos are supported.",
+          "error"
+        );
+        return;
+      }
+
+      if (!file.size || file.size > MAX_BYTES) {
+        setStatus(
+          "Photo must be smaller than 20 MB.",
+          "error"
+        );
+        return;
+      }
+
+      photo = file;
+
+      if (photoUrl) {
+        URL.revokeObjectURL(photoUrl);
+      }
+
+      photoUrl = URL.createObjectURL(file);
+
+      preview.src = photoUrl;
+      previewArea.classList.add("has-image");
+      fileInfo.classList.add("visible");
+
+      fileName.textContent =
+        file.name || "Selected photo";
+
+      fileSize.textContent =
+        (file.size / 1048576).toFixed(2) + " MB";
+
+      photoStage.textContent = "Ready to upload";
+
+      setStatus(
+        "Photo ready. Confirm the destination before uploading."
+      );
+
+      refresh();
+    }
+
+    cameraInput.addEventListener("change", function() {
+      choosePhoto(cameraInput.files[0]);
+      cameraInput.value = "";
+    });
+
+    galleryInput.addEventListener("change", function() {
+      choosePhoto(galleryInput.files[0]);
+      galleryInput.value = "";
+    });
+
+    // ========================================
+    // UPLOAD PHOTO
+    // ========================================
+
+    uploadButton.addEventListener("click", function() {
+      if (
+        busy ||
+        checking ||
+        modalOpen ||
+        waiting ||
+        !photo ||
+        !destination
+      ) {
+        return;
+      }
+
+      busy = true;
+      refresh();
+
+      const current = {
+        cell: destination.cell,
+        sheetId: destination.sheetId
+      };
+
+      const file = photo;
+      const currentMode = mode;
+      const expectedAt = anchorAt;
+
+      setStatus(
+        "Preparing original photo...",
+        "busy"
+      );
+
+      const reader = new FileReader();
+
+      reader.onerror = function() {
+        busy = false;
+
+        setStatus(
+          "Unable to read the selected photo.",
+          "error"
+        );
+
+        refresh();
+      };
+
+      reader.onload = function() {
+        const result = String(reader.result);
+        const comma = result.indexOf(",");
+
+        if (comma === -1) {
+          busy = false;
+
+          setStatus(
+            "Unable to prepare photo data.",
+            "error"
+          );
+
+          refresh();
+          return;
+        }
+
+        const base64 = result.slice(comma + 1);
+
+        setStatus(
+          "Uploading photo into " + current.cell + "...",
+          "busy"
+        );
+
+        google.script.run
+          .withSuccessHandler(function(response) {
+            busy = false;
+
+            if (response && response.success) {
+              clearPhoto();
+
+              setStatus(
+                "Photo inserted into " +
+                  response.cell + ".",
+                "success"
+              );
+
+              if (currentMode === "auto") {
+                advanceCell(
+                  response.cell,
+                  response.sheetId
+                );
+              } else {
+                manualUsedAt = expectedAt;
+                clearDestination();
+
+                setSelectionState(
+                  "warning",
+                  "Select next cell",
+                  "Click another cell on the laptop."
+                );
+
+                pollSelection();
+              }
+
+            } else if (
+              response &&
+              response.selectionChanged
+            ) {
+              clearDestination();
+
+              if (
+                response.cell &&
+                response.sheetId &&
+                response.selectedAt
+              ) {
+                const updated = {
+                  cell: response.cell,
+                  sheetId: String(response.sheetId),
+                  selectedAt: Number(response.selectedAt),
+                  expired: false
+                };
+
+                laptop = updated;
+                applySelection(updated);
+              } else {
+                pollSelection();
+              }
+
+              setStatus(
+                "Laptop selection changed. Confirm the new cell and retry.",
+                "warning"
+              );
+
+            } else if (
+              response &&
+              response.occupied
+            ) {
+              openOccupied(response.cell);
+
+            } else {
+              setStatus(
+                response && response.message
+                  ? response.message
+                  : "Upload failed.",
+                "error"
+              );
+
+              if (
+                response &&
+                response.selectionExpired
+              ) {
+                clearDestination();
+
+                setSelectionState(
+                  "warning",
+                  "Selection expired",
+                  "Select a fresh cell on the laptop."
+                );
+              }
+            }
+
+            refresh();
+          })
+          .withFailureHandler(function(error) {
+            busy = false;
+
+            setStatus(
+              "Upload failed: " +
+                error.message +
+                ". Check Drive before retrying.",
+              "error"
+            );
+
+            refresh();
+          })
+          .uploadPhoto(
+            base64,
+            file.type,
+            current.cell,
+            current.sheetId,
+            currentMode,
+            expectedAt
+          );
+      };
+
+      reader.readAsDataURL(file);
+    });
+
+    // ========================================
+    // START APPLICATION
+    // ========================================
+
+    updateModeUI();
+    refresh();
+
+    if (
+      typeof google !== "undefined" &&
+      google.script &&
+      google.script.run
+    ) {
+      pollSelection();
+
+      setInterval(
+        pollSelection,
+        2500
+      );
+    } else {
+      setStatus(
+        "Open this page using your deployed Google Apps Script URL.",
+        "error"
+      );
+    }
+
+    window.addEventListener("pagehide", function() {
+      if (photoUrl) {
+        URL.revokeObjectURL(photoUrl);
+      }
+    });
+
+  </script>
+
+</body>
+</html>
