@@ -192,15 +192,18 @@ Keep the Fieldframe web application open on your smartphone and the correspondin
 
 You are now ready to capture your first photograph.
 
-### Step 10 — Capture and Upload Your First Photograph
 
-Fieldframe allows you to capture photographs on your smartphone and insert them directly into selected Google Sheets cells.
+### Step 10 — Watch the Demonstration
 
-The following demonstration shows the complete workflow, including live cell detection, photograph selection, and uploading to Google Sheets.
+Watch the complete Fieldframe demonstration to see how
+your smartphone connects with Google Sheets, detects the
+selected cell, and uploads photographs directly into
+your spreadsheet.
 
-[![Watch the Fieldframe Demonstration](docs/images/10-fieldframe-demo.gif)](docs/videos/fieldframe-demo.mp4)
+[![Watch the Fieldframe Demonstration](https://img.youtube.com/vi/cqA6P_2qDD8/maxresdefault.jpg)](https://youtu.be/cqA6P_2qDD8)
 
-**[Watch the full demonstration video](docs/videos/fieldframe-demo.mp4)**
+**[Watch the Full Demonstration on YouTube](https://youtu.be/cqA6P_2qDD8)**
+
 
 #### Uploading a Photograph
 
